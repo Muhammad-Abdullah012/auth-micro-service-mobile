@@ -97,6 +97,9 @@ export const SignupScreen = () => {
                 style={styles.input}
                 placeholder="Enter your password"
                 secureTextEntry={true}
+                passwordRules={
+                  "minlength: 9; required: lower; required: upper; required: digit;"
+                }
               />
             </View>
             <View style={styles.inputContainer}>
