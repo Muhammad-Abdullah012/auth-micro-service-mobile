@@ -8,4 +8,5 @@ export const Color = {
   royalBlue: "#007BFF",
   error: "#ff0000",
   gray: "#808080",
+  royalBlue50: "rgba(0,123,255, 0.5)",
 };
