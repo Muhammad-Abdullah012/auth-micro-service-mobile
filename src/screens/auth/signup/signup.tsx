@@ -9,6 +9,7 @@ import {
   SafeAreaView,
   ScrollView,
 } from "react-native";
+import Toast from "react-native-root-toast";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { useNavigation } from "@react-navigation/native";
@@ -174,6 +175,10 @@ export const SignupScreen = () => {
                 { opacity: pressed ? 0.5 : 1 },
               ]}
               onPress={async () => {
+                if (state.password !== state.confirmPassword) {
+                  Toast.show("Password and Confirm Password must be same!");
+                  return;
+                }
                 const res = await SignUpRequest(state);
                 await Promise.all([
                   AsyncStorage.setItem(

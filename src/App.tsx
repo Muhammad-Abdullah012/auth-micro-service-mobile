@@ -1,4 +1,4 @@
-import { useEffect, useCallback, useState, useReducer } from "react";
+import { useEffect, useCallback, useReducer } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { NavigationContainer } from "@react-navigation/native";
 import { Stack, AppStack, AuthStack } from "./AppStacks";

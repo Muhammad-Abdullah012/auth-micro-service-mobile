@@ -1,4 +1,5 @@
 import Axios from "axios";
+import Toast from "react-native-root-toast";
 import { BASE_URL } from "../../env";
 import { ILoginRequest } from "../interface/requests";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -18,6 +19,13 @@ axios.interceptors.response.use(
     if (error.response) {
       console.error("Error status code => ", error.response.status);
       console.error("Error message => ", error.response.data?.message);
+      Toast.show(error.response.data?.message ?? "Something went wrong!", {
+        duration: Toast.durations.LONG,
+      });
+    } else {
+      Toast.show("Something went wrong!", {
+        duration: Toast.durations.LONG,
+      });
     }
     if (error.request) {
       console.error("error.request => ", error.request);
