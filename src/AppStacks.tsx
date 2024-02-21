@@ -1,5 +1,11 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { createDrawerNavigator } from "@react-navigation/drawer";
+import {
+  DrawerContentScrollView,
+  DrawerItem,
+  DrawerItemList,
+  createDrawerNavigator,
+} from "@react-navigation/drawer";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { LoginScreen } from "./screens/auth/login/login";
 import { SignupScreen } from "./screens/auth/signup/signup";
 import {
@@ -10,6 +16,10 @@ import {
 } from "./screens/screenOptions/AllScreenOptions";
 import { ChatScreen } from "./screens/chatScreen";
 import { ProfileScreen } from "./screens/profileScreen";
+import { BEARER_TOKEN, REFRESH_TOKEN } from "./constants/asyncStorageKeys";
+import { useContext } from "react";
+import { AuthContext } from "./context/authContext";
+import { SignOutAction } from "./actions/auth";
 
 export const Stack = createNativeStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -51,9 +61,31 @@ export const AuthStack = () => {
   );
 };
 
+const CustomDrawerContent = (props) => {
+  const { dispatch } = useContext(AuthContext);
+  return (
+    <DrawerContentScrollView {...props}>
+      <DrawerItemList {...props} />
+      <DrawerItem
+        label="Logout"
+        onPress={async () => {
+          await Promise.all([
+            (AsyncStorage.removeItem(REFRESH_TOKEN),
+            AsyncStorage.removeItem(BEARER_TOKEN)),
+          ]);
+          dispatch(SignOutAction());
+        }}
+      />
+    </DrawerContentScrollView>
+  );
+};
+
 export const DrawerNavigator = () => {
   return (
-    <Drawer.Navigator initialRouteName={ChatScreenOptions.name}>
+    <Drawer.Navigator
+      initialRouteName={ChatScreenOptions.name}
+      drawerContent={(props) => <CustomDrawerContent {...props} />}
+    >
       <Drawer.Screen
         name={ChatScreenOptions.name}
         component={ChatScreen}

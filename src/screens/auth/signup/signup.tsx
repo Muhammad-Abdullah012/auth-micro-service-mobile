@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useReducer, useState, useContext } from "react";
 import {
   KeyboardAvoidingView,
   Text,
@@ -9,6 +9,7 @@ import {
   SafeAreaView,
   ScrollView,
 } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { useNavigation } from "@react-navigation/native";
 import { Color } from "../../../utils/colors";
@@ -17,16 +18,38 @@ import {
   widthPercentageToDp,
 } from "../../../utils/responsive";
 import { LoginScreenOptions } from "../../screenOptions/AllScreenOptions";
+import { signUpReducer } from "../../../reducers/signUpReducer";
+import { initialState } from "../../../interface/signUpState";
+import {
+  setConfirmPasswordAction,
+  setDateOfBirthAction,
+  setEmailAction,
+  setFirstNameAction,
+  setLastNameAction,
+  setPasswordAction,
+  setPhoneNumberAction,
+  setUsernameAction,
+} from "../../../actions/signUp";
+import { SignUpRequest } from "../../../utils/requests";
+import { SignInAction } from "../../../actions/auth";
+import {
+  REFRESH_TOKEN,
+  BEARER_TOKEN,
+} from "../../../constants/asyncStorageKeys";
+import { AuthContext } from "../../../context/authContext";
 
 export const SignupScreen = () => {
   const navigation = useNavigation();
-  const [date, setDate] = useState(new Date());
+  const { dispatch: authDispatch } = useContext(AuthContext);
+  const [state, dispatch] = useReducer(signUpReducer, initialState);
   const [show, setShow] = useState(false);
+  const [isDateSelected, setIsDateSelected] = useState(false);
 
   const onChange = (event, selectedDate) => {
     const currentDate = selectedDate;
     setShow(false);
-    setDate(currentDate);
+    setIsDateSelected(true);
+    dispatch(setDateOfBirthAction(currentDate));
   };
 
   return (
@@ -41,6 +64,10 @@ export const SignupScreen = () => {
               <Text style={styles.labelText}>First Name</Text>
               <TextInput
                 style={styles.input}
+                value={state.firstName}
+                onChangeText={(t) => {
+                  dispatch(setFirstNameAction(t));
+                }}
                 placeholder="Enter your first name"
               />
             </View>
@@ -48,19 +75,34 @@ export const SignupScreen = () => {
               <Text style={styles.labelText}>Last Name</Text>
               <TextInput
                 style={styles.input}
+                value={state.lastName}
                 placeholder="Enter your last name"
+                onChangeText={(t) => {
+                  dispatch(setLastNameAction(t));
+                }}
               />
             </View>
             <View style={styles.inputContainer}>
               <Text style={styles.labelText}>Username</Text>
               <TextInput
                 style={styles.input}
+                value={state.username}
                 placeholder="Enter your username"
+                onChangeText={(t) => {
+                  dispatch(setUsernameAction(t));
+                }}
               />
             </View>
             <View style={styles.inputContainer}>
               <Text style={styles.labelText}>Email</Text>
-              <TextInput style={styles.input} placeholder="Enter your email" />
+              <TextInput
+                style={styles.input}
+                value={state.email}
+                onChangeText={(t) => {
+                  dispatch(setEmailAction(t));
+                }}
+                placeholder="Enter your email"
+              />
             </View>
             <View style={styles.inputContainer}>
               <Text style={styles.labelText}>Date of Birth</Text>
@@ -71,12 +113,16 @@ export const SignupScreen = () => {
                 ]}
                 onPress={() => setShow(true)}
               >
-                <Text>Select Date</Text>
+                <Text>
+                  {isDateSelected
+                    ? state.dateOfBirth.toDateString()
+                    : "Select Date"}
+                </Text>
               </Pressable>
               {show && (
                 <DateTimePicker
                   testID="dateTimePicker"
-                  value={date}
+                  value={state.dateOfBirth}
                   mode={"date"}
                   is24Hour={true}
                   onChange={onChange}
@@ -88,6 +134,10 @@ export const SignupScreen = () => {
               <Text style={styles.labelText}>Phone Number</Text>
               <TextInput
                 style={styles.input}
+                value={state.phoneNumber}
+                onChangeText={(t) => {
+                  dispatch(setPhoneNumberAction(t));
+                }}
                 placeholder="Enter your phone number"
               />
             </View>
@@ -97,6 +147,10 @@ export const SignupScreen = () => {
                 style={styles.input}
                 placeholder="Enter your password"
                 secureTextEntry={true}
+                value={state.password}
+                onChangeText={(t) => {
+                  dispatch(setPasswordAction(t));
+                }}
                 passwordRules={
                   "minlength: 9; required: lower; required: upper; required: digit;"
                 }
@@ -106,6 +160,10 @@ export const SignupScreen = () => {
               <Text style={styles.labelText}>Confirm Password</Text>
               <TextInput
                 style={styles.input}
+                value={state.confirmPassword}
+                onChangeText={(t) => {
+                  dispatch(setConfirmPasswordAction(t));
+                }}
                 placeholder="Confirm your password"
                 secureTextEntry={true}
               />
@@ -115,7 +173,20 @@ export const SignupScreen = () => {
                 styles.signupButton,
                 { opacity: pressed ? 0.5 : 1 },
               ]}
-              onPress={() => console.log("Sign up pressed")}
+              onPress={async () => {
+                const res = await SignUpRequest(state);
+                await Promise.all([
+                  AsyncStorage.setItem(
+                    REFRESH_TOKEN,
+                    res.data.data.refresh.token ?? ""
+                  ),
+                  AsyncStorage.setItem(
+                    BEARER_TOKEN,
+                    res.data.data.bearer.token ?? ""
+                  ),
+                ]);
+                authDispatch(SignInAction());
+              }}
             >
               <Text style={styles.buttonText}>Sign Up</Text>
             </Pressable>

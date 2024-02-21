@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   View,
   Text,
@@ -7,25 +7,63 @@ import {
   Pressable,
   StyleSheet,
   SafeAreaView,
+  FlatList,
 } from "react-native";
 import { ROLE } from "../interface";
 import { Color } from "../utils/colors";
+import { ChatRequest } from "../utils/requests";
 
 export const ChatScreen = () => {
+  const [messages, setMessages] = useState([]);
+  const [prompt, setPrompt] = useState("");
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView style={styles.scrollView}>
-        <View style={styles.chatContainer}>
+      <FlatList
+        contentContainerStyle={styles.chatContainer}
+        style={{ flex: 1 }}
+        data={messages}
+        renderItem={({ item }) => (
+          <MessageComponent
+            isAvatarBefore={item.role === ROLE.RESPONSE}
+            message={item.message ?? ""}
+          />
+        )}
+        ListEmptyComponent={() => (
+          <>
+            <MessageComponent isAvatarBefore={false} message={"Hello"} />
+            <MessageComponent
+              isAvatarBefore={true}
+              message={"Hello, how can I assist you!"}
+            />
+          </>
+        )}
+      />
+      {/* <View style={styles.chatContainer}>
           <MessagesList />
-        </View>
-      </ScrollView>
+        </View> */}
+
       <View style={styles.inputContainer}>
-        <TextInput style={styles.input} placeholder="Type your message..." />
+        <TextInput
+          style={styles.input}
+          value={prompt}
+          placeholder="Type your message..."
+          onChangeText={setPrompt}
+        />
         <Pressable
           style={({ pressed }) => [
             styles.sendButton,
             { opacity: pressed ? 0.5 : 1 },
           ]}
+          onPress={async () => {
+            const res = await ChatRequest({ prompt: prompt.trim() });
+            const newMessages = [
+              { role: ROLE.PROMPT, message: prompt },
+              { role: ROLE.RESPONSE, message: res.data.data },
+            ];
+            setMessages((prev) => [...prev, ...newMessages]);
+            setPrompt("");
+          }}
+          disabled={prompt?.trim?.()?.length == 0}
         >
           <Text style={styles.sendButtonText}>Send</Text>
         </Pressable>
@@ -96,7 +134,6 @@ const styles = StyleSheet.create({
   },
   chatContainer: {
     flex: 1,
-    justifyContent: "space-between",
     padding: 16,
   },
   inputContainer: {

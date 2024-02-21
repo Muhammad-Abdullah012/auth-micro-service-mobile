@@ -1,0 +1,8 @@
+export const SET_DATE_OF_BIRTH = "SET_DATE_OF_BIRTH";
+export const SET_FIRST_NAME = "SET_FIRST_NAME";
+export const SET_LAST_NAME = "SET_LAST_NAME";
+export const SET_USERNAME = "SET_USERNAME";
+export const SET_EMAIL = "SET_EMAIL";
+export const SET_PHONE_NUMBER = "SET_PHONE_NUMBER";
+export const SET_PASSWORD = "SET_PASSWORD";
+export const SET_CONFIRM_PASSWORD = "SET_CONFIRM_PASSWORD";

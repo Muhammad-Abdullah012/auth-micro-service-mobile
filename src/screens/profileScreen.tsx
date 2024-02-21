@@ -20,7 +20,7 @@ import { ProfileScreenInputComponent } from "../components/profileScreen/profile
 import {
   GetMyProfileRequest,
   UpdateProfileRequest,
-  uploadFiles,
+  UploadFiles,
 } from "../utils/requests";
 import { ProfileScreenOptions } from "./screenOptions/AllScreenOptions";
 import { selectImage } from "../utils/pickDocument";
@@ -94,7 +94,7 @@ export const ProfileScreen = () => {
     dateOfBirth,
     ...filteredUser
   } = user ?? {};
-  console.log("url => ", `${BASE_URL}/files/images/${user?.profileImage}`);
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={[styles.scrollViewStyle, styles.scrollViewContainerStyle]}>
@@ -104,7 +104,7 @@ export const ProfileScreen = () => {
             const result = await selectImage();
             if (result.assets == null) return;
             const { mimeType, uri, name } = result.assets[0];
-            const uploadResult = await uploadFiles({
+            const uploadResult = await UploadFiles({
               profileImage: { type: mimeType, uri, name },
             });
 

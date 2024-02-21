@@ -60,7 +60,7 @@ export const UpdateProfileRequest = async ({
   return axios.post("/users/update-profile", body);
 };
 
-export const uploadFiles = async (data: { [key: string]: any }) => {
+export const UploadFiles = async (data: { [key: string]: any }) => {
   const formData = new FormData();
 
   Object.keys(data).forEach((key) => {
@@ -71,4 +71,12 @@ export const uploadFiles = async (data: { [key: string]: any }) => {
   return axios.postForm("/files/upload", formData, {
     headers: { "Content-Type": "multipart/form-data" },
   });
+};
+
+export const ChatRequest = async (data: { [key: string]: string }) => {
+  return axios.post("/chat", data);
+};
+
+export const SignUpRequest = async (data: { [key: string]: any }) => {
+  return axios.post("/signup", data);
 };
