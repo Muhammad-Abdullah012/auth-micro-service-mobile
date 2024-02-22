@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "auth-micro-service-mobile",
-    "slug": "auth-micro-service-mobile",
+    "slug": "auth-micro-service-mobile-app",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -24,6 +24,11 @@
     "web": {
       "favicon": "./assets/favicon.png"
     },
-    "plugins": [["expo-document-picker"]]
+    "plugins": [["expo-document-picker"]],
+    "extra": {
+      "eas": {
+        "projectId": "fe3b6794-1318-4598-a414-c2560fa6e8c4"
+      }
+    }
   }
 }
