@@ -7,7 +7,7 @@ import { BEARER_TOKEN, REFRESH_TOKEN } from "../constants/asyncStorageKeys";
 
 const axios = Axios.create({
   baseURL: BASE_URL,
-  timeout: 1000,
+  // timeout: 1000,
 });
 
 axios.interceptors.response.use(
