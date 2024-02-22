@@ -19,15 +19,24 @@ export const ProfileScreenInputComponent = ({
   initialValue,
   canEdit = true,
   scrollToInput,
+  propertyName,
   onUpdate,
 }: {
   initialValue: string;
+  propertyName: string;
   canEdit?: boolean;
   scrollToInput: (e: NativeSyntheticEvent<TextInputFocusEventData>) => void;
   onUpdate: (v: string) => void;
 }) => {
   const [editable, setEditable] = useState(false);
   const [value, setValue] = useState(initialValue);
+
+  const inputMode =
+    propertyName === "email"
+      ? "email"
+      : propertyName === "phoneNumber"
+      ? "tel"
+      : undefined;
 
   useEffect(() => {
     setValue(initialValue);
@@ -50,6 +59,7 @@ export const ProfileScreenInputComponent = ({
           style={[styles.inputFieldStyle, styles.textFontSize]}
           editable={editable}
           value={value}
+          inputMode={inputMode}
           onChangeText={(t) => setValue(t)}
           onFocus={scrollToInput}
         />

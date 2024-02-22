@@ -31,7 +31,7 @@ import {
   setPhoneNumberAction,
   setUsernameAction,
 } from "../../../actions/signUp";
-import { SignUpRequest } from "../../../utils/requests";
+import { CheckUsernameRequest, SignUpRequest } from "../../../utils/requests";
 import { SignInAction } from "../../../actions/auth";
 import {
   REFRESH_TOKEN,
@@ -45,6 +45,10 @@ export const SignupScreen = () => {
   const [state, dispatch] = useReducer(signUpReducer, initialState);
   const [show, setShow] = useState(false);
   const [isDateSelected, setIsDateSelected] = useState(false);
+
+  const { dateOfBirth: dob, ...restState } = state;
+
+  const isButtonDisabled = Object.values(restState).includes("");
 
   const onChange = (event, selectedDate) => {
     const currentDate = selectedDate;
@@ -92,6 +96,9 @@ export const SignupScreen = () => {
                 onChangeText={(t) => {
                   dispatch(setUsernameAction(t));
                 }}
+                onEndEditing={async (e) => {
+                  await CheckUsernameRequest({ username: state.username });
+                }}
               />
             </View>
             <View style={styles.inputContainer}>
@@ -99,6 +106,7 @@ export const SignupScreen = () => {
               <TextInput
                 style={styles.input}
                 value={state.email}
+                inputMode={"email"}
                 onChangeText={(t) => {
                   dispatch(setEmailAction(t));
                 }}
@@ -136,6 +144,7 @@ export const SignupScreen = () => {
               <TextInput
                 style={styles.input}
                 value={state.phoneNumber}
+                inputMode={"tel"}
                 onChangeText={(t) => {
                   dispatch(setPhoneNumberAction(t));
                 }}
@@ -172,8 +181,9 @@ export const SignupScreen = () => {
             <Pressable
               style={({ pressed }) => [
                 styles.signupButton,
-                { opacity: pressed ? 0.5 : 1 },
+                { opacity: pressed || isButtonDisabled ? 0.5 : 1 },
               ]}
+              disabled={isButtonDisabled}
               onPress={async () => {
                 if (state.password !== state.confirmPassword) {
                   Toast.show("Password and Confirm Password must be same!");

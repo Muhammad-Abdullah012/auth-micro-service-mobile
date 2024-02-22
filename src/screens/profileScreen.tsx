@@ -155,6 +155,7 @@ export const ProfileScreen = () => {
                       });
                     });
                   }}
+                  propertyName={k}
                   onUpdate={(v) => {
                     UpdateProfileRequest({ body: { [k]: v } });
                   }}

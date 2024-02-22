@@ -88,3 +88,11 @@ export const ChatRequest = async (data: { [key: string]: string }) => {
 export const SignUpRequest = async (data: { [key: string]: any }) => {
   return axios.post("/signup", data);
 };
+
+export const CheckUsernameRequest = async ({
+  username,
+}: {
+  username: string;
+}) => {
+  return axios.post("/check-username", { username });
+};
