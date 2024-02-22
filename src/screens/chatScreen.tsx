@@ -32,7 +32,9 @@ export const ChatScreen = () => {
       <FlatList
         contentContainerStyle={styles.chatContainer}
         style={{ flex: 1 }}
+        scrollEnabled={true}
         data={messages}
+        showsVerticalScrollIndicator={false}
         renderItem={({ item }) => (
           <MessageComponent
             isAvatarBefore={item.role === ROLE.RESPONSE}
@@ -139,7 +141,6 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   chatContainer: {
-    flex: 1,
     padding: 16,
   },
   inputContainer: {
