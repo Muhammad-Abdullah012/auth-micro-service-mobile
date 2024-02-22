@@ -58,8 +58,8 @@ export const LoginScreen = () => {
       const res = await LoginRequest({
         password,
         ...(validator.isEmail(emailOrUsername)
-          ? { email: emailOrUsername }
-          : { username: emailOrUsername }),
+          ? { email: emailOrUsername.trim() }
+          : { username: emailOrUsername.trim() }),
       });
       await Promise.all([
         AsyncStorage.setItem(REFRESH_TOKEN, res.data.data.refresh.token ?? ""),
