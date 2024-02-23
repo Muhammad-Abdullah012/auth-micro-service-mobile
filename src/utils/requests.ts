@@ -1,12 +1,11 @@
 import Axios from "axios";
 import Toast from "react-native-root-toast";
-import { BASE_URL } from "../../env";
 import { ILoginRequest } from "../interface/requests";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { BEARER_TOKEN, REFRESH_TOKEN } from "../constants/asyncStorageKeys";
 
 const axios = Axios.create({
-  baseURL: BASE_URL,
+  baseURL: process.env.EXPO_PUBLIC_BASE_URL,
   // timeout: 1000,
 });
 

@@ -15,7 +15,6 @@ import { UserProfileSvg } from "../assets/svgComponents/userProfile";
 import { TextComponent as Text } from "../components/text";
 import { Color } from "../utils/colors";
 import { heightPercentageToDp, widthPercentageToDp } from "../utils/responsive";
-import { BASE_URL } from "../../env";
 import { ProfileScreenInputComponent } from "../components/profileScreen/profileScreenInput";
 import {
   GetMyProfileRequest,
@@ -118,7 +117,7 @@ export const ProfileScreen = () => {
           {user?.profileImage ? (
             <Image
               source={{
-                uri: `${BASE_URL}/files/images/${user?.profileImage}`,
+                uri: `${process.env.EXPO_PUBLIC_BASE_URL}/files/images/${user?.profileImage}`,
               }}
               style={styles.imageStyle}
               resizeMode={"cover"}
